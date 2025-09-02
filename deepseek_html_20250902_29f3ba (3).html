@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antarctic Wallet</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .header {
+            padding: 24px 20px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 20px;
+            background: linear-gradient(90deg, #0088cc, #3bf7e0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #0088cc 0%, #3bf7e0 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ton-logo {
+            width: 22px;
+            height: 22px;
+            background: white;
+            -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 240'%3E%3Cpath d='M120,240C53.7,240,0,186.3,0,120S53.7,0,120,0s120,53.7,120,120S186.3,240,120,240z M183.3,80.5h-41.9 c-1.2,0-2.3,0.7-2.9,1.7L120,103.2l-18.5-21c-0.6-0.9-1.7-1.7-2.9-1.7H56.7c-1.5,0-2.7,1.2-2.7,2.7v8.6c0,0.7,0.3,1.4,0.7,1.9 l46.1,52.4c1.1,1.3,2.7,2,4.3,2s3.2-0.7,4.3-2l46.1-52.4c0.5-0.5,0.7-1.2,0.7-1.9v-8.6C186,81.7,184.8,80.5,183.3,80.5z'/%3E%3C/svg%3E") center/contain no-repeat;
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 240'%3E%3Cpath d='M120,240C53.7,240,0,186.3,0,120S53.7,0,120,0s120,53.7,120,120S186.3,240,120,240z M183.3,80.5h-41.9 c-1.2,0-2.3,0.7-2.9,1.7L120,103.2l-18.5-21c-0.6-0.9-1.7-1.7-2.9-1.7H56.7c-1.5,0-2.7,1.2-2.7,2.7v8.6c0,0.7,0.3,1.4,0.7,1.9 l46.1,52.4c1.1,1.3,2.7,2,4.3,2s3.2-0.7,4.3-2l46.1-52.4c0.5-0.5,0.7-1.2,0.7-1.9v-8.6C186,81.7,184.8,80.5,183.3,80.5z'/%3E%3C/svg%3E") center/contain no-repeat;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: rgba(136, 146, 176, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3bf7e0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(59, 247, 224, 0.1);
+        }
+        
+        .avatar-placeholder {
+            font-size: 20px;
+        }
+        
+        .avatar-upload {
+            display: none;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 3px;
+            text-align: center;
+            font-size: 12px;
+        }
+        
+        .user-avatar:hover .avatar-upload {
+            display: block;
+        }
+        
+        #avatarInput {
+            display: none;
+        }
+        
+        .balance-section {
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .balance-label {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .balance-usd {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+        
+        .crypto-balances {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .crypto-balance {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .crypto-amount {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .crypto-name {
+            font-size: 12px;
+            color: #94a3b8;
+            padding: 4px 8px;
+            border-radius: 8px;
+            background: rgba(136, 146, 176, 0.1);
+        }
+        
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            padding: 24px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .action-btn {
+            background: rgba(136, 146, 176, 0.1);
+            border: none;
+            border-radius: 16px;
+            padding: 16px 12px;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .action-btn:hover {
+            background: rgba(59, 247, 224, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .action-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .action-icon {
+            font-size: 20px;
+            margin-bottom: 10px;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3bf7e0;
+        }
+        
+        .action-text {
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .promo-banner {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            margin: 20px;
+            padding: 20px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            text-align: left;
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .promo-banner::before {
+            content: "%";
+            position: absolute;
+            top: -15px;
+            left: 15px;
+            font-size: 40px;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.15);
+            z-index: 1;
+        }
+        
+        .promo-banner::after {
+            content: "%";
+            position: absolute;
+            bottom: -15px;
+            right: 15px;
+            font-size: 40px;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.15);
+            z-index: 1;
+        }
+        
+        .percent-logo {
+            width: 60px;
+            height: 60px;
+            margin-right: 15px;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            font-size: 32px;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .promo-content {
+            flex: 1;
+            z-index: 2;
+        }
+        
+        .promo-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .promo-subtitle {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 10px;
+        }
+        
+        .promo-button {
+            background: white;
+            color: #4f46e5;
+            border: none;
+            border-radius: 10px;
+            padding: 8px 16px;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .promo-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .transactions {
+            padding: 20px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .view-all {
+            color: #3bf7e0;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
+        .transaction {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            border-radius: 16px;
+            margin-bottom: 12px;
+            background: rgba(136, 146, 176, 0.05);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .transaction:hover {
+            background: rgba(136, 146, 176, 0.1);
+        }
+        
+        .transaction-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: rgba(59, 247, 224, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            color: #3bf7e0;
+        }
+        
+        .transaction-details {
+            flex: 1;
+        }
+        
+        .transaction-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .transaction-date {
+            color: #94a3b8;
+            font-size: 13px;
+        }
+        
+        .transaction-amount {
+            font-weight: 700;
+            font-size: 16px;
+        }
+        
+        .positive {
+            color: #3bf7e0;
+        }
+        
+        .negative {
+            color: #f87171;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-around;
+            padding: 16px 20px;
+            background: rgba(15, 23, 42, 0.9);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #94a3b8;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
+        .nav-item.active {
+            color: #3bf7e0;
+        }
+        
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+        
+        /* Стили для страницы профиля */
+        .profile-section {
+            padding: 20px;
+            display: none;
+        }
+        
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .profile-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            background: rgba(136, 146, 176, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3bf7e0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            margin-right: 15px;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .profile-info {
+            flex: 1;
+        }
+        
+        .profile-name {
+            font-size: 18px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .premium-badge {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: #000;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .referral-section {
+            background: rgba(136, 146, 176, 0.1);
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .referral-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .referral-link {
+            display: flex;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 12px;
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        .referral-link-text {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .copy-btn {
+            background: #3bf7e0;
+            color: #0f172a;
+            border: none;
+            border-radius: 8px;
+            padding: 5px 10px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        
+        .subscription-card {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .subscription-card::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+            transform: rotate(30deg);
+        }
+        
+        .subscription-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .subscription-status {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.9);
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* Стили для страницы настроек */
+        .settings-section {
+            padding: 20px;
+            display: none;
+        }
+        
+        .settings-item {
+            background: rgba(136, 146, 176, 0.1);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .settings-item:hover {
+            background: rgba(136, 146, 176, 0.2);
+        }
+        
+        .settings-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .settings-desc {
+            font-size: 14px;
+            color: #94a3b8;
+        }
+        
+        /* Модальные окна */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: #1e293b;
+            padding: 25px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .modal-body {
+            margin-bottom: 20px;
+        }
+        
+        .modal-input {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            background: rgba(136, 146, 176, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        
+        .modal-btn {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #0088cc 0%, #3bf7e0 100%);
+            border: none;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .modal-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(59, 247, 224, 0.9);
+            color: #0f172a;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .toast.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <div class="ton-logo"></div>
+                </div>
+                <span>Antarctic Wallet</span>
+            </div>
+            <div class="user-avatar" onclick="document.getElementById('avatarInput').click()">
+                <div class="avatar-img">
+                    <div class="avatar-placeholder">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+                <div class="avatar-upload">Сменить аватар</div>
+                <input type="file" id="avatarInput" accept="image/*">
+            </div>
+        </div>
+        
+        <!-- Главная страница -->
+        <div id="mainPage">
+            <div class="balance-section">
+                <div class="balance-label">Ваш баланс</div>
+                <div class="balance-usd" id="balanceDisplay">216.34 $</div>
+                
+                <div class="crypto-balances">
+                    <div class="crypto-balance">
+                        <div class="crypto-amount">35.4</div>
+                        <div class="crypto-name">TON</div>
+                    </div>
+                    
+                    <div class="crypto-balance">
+                        <div class="crypto-amount">124.7</div>
+                        <div class="crypto-name">USDT</div>
+                    </div>
+                    
+                    <div class="crypto-balance">
+                        <div class="crypto-amount">0.0052</div>
+                        <div class="crypto-name">BITCOIN</div>
+                    </div>
+                    
+                    <div class="crypto-balance">
+                        <div class="crypto-amount">18.9</div>
+                        <div class="crypto-name">ETH</div>
+                    </div>
+                    
+                    <div class="crypto-balance">
+                        <div class="crypto-amount">2450</div>
+                        <div class="crypto-name">DOGE</div>
+                    </div>
+                    
+                    <div class="crypto-balance">
+                        <div class="crypto-amount">125.5</div>
+                        <div class="crypto-name">LTC</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="action-btn" onclick="openModal('sendModal')">
+                    <div class="action-icon">
+                        <i class="fas fa-paper-plane"></i>
+                    </div>
+                    <span class="action-text">Отправить</span>
+                </button>
+                <button class="action-btn" onclick="openModal('depositModal')">
+                    <div class="action-icon">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <span class="action-text">Депозит</span>
+                </button>
+                <button class="action-btn" onclick="openModal('buyModal')">
+                    <div class="action-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <span class="action-text">Купить</span>
+                </button>
+                <button class="action-btn" onclick="openModal('contractModal')">
+                    <div class="action-icon">
+                        <i class="fas fa-file-contract"></i>
+                    </div>
+                    <span class="action-text">Договор</span>
+                </button>
+            </div>
+            
+            <div class="promo-banner">
+                <div class="percent-logo">%</div>
+                <div class="promo-content">
+                    <div class="promo-title">До 30% комиссионных</div>
+                    <div class="promo-subtitle">с каждого приглашенного друга</div>
+                    <button class="promo-button">Пригласить</button>
+                </div>
+            </div>
+            
+            <div class="transactions">
+                <div class="section-title">
+                    <span>Последние операции</span>
+                    <span class="view-all" onclick="openModal('transactionsModal')">Все</span>
+                </div>
+                
+                <div class="transaction" onclick="showTransactionDetails('+4.10 TON', 'Перевод от Неизвестный', '1 сентября, 23:22')">
+                    <div class="transaction-icon">
+                        <i class="fas fa-user-secret"></i>
+                    </div>
+                    <div class="transaction-details">
+                        <div class="transaction-title">Перевод от Неизвестный</div>
+                        <div class="transaction-date">1 сентября, 23:22</div>
+                    </div>
+                    <div class="transaction-amount positive">+4.10 TON</div>
+                </div>
+                
+                <div class="transaction" onclick="showTransactionDetails('+4.94 TON', 'Перевод от Неизвестный', '1 сентября, 23:11')">
+                    <div class="transaction-icon">
+                        <i class="fas fa-user-secret"></i>
+                    </div>
+                    <div class="transaction-details">
+                        <div class="transaction-title">Перевод от Неизвестный</div>
+                        <div class="transaction-date">1 сентября, 23:11</div>
+                    </div>
+                    <div class="transaction-amount positive">+4.94 TON</div>
+                </div>
+                
+                <div class="transaction" onclick="showTransactionDetails('+3.03 TON', 'Перевод от Неизвестный', '1 сентября, 22:49')">
+                    <div class="transaction-icon">
+                        <i class="fas fa-user-secret"></i>
+                    </div>
+                    <div class="transaction-details">
+                        <div class="transaction-title">Перевод от Неизвестный</div>
+                        <div class="transaction-date">1 сентября, 22:49</div>
+                    </div>
+                    <div class="transaction-amount positive">+3.03 TON</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Страница профиля -->
+        <div id="profilePage" class="profile-section">
+            <div class="profile-header">
+                <div class="profile-avatar" onclick="document.getElementById('avatarInput').click()">
+                    <div class="avatar-img">
+                        <div class="avatar-placeholder">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="profile-info">
+                    <div class="profile-name">
+                        геланов
+                        <span class="premium-badge">AW</span>
+                    </div>
+                    <div style="color: #94a3b8; font-size: 14px;">Годовой подписчик</div>
+                </div>
+            </div>
+            
+            <div class="referral-section">
+                <div class="referral-title">Реферальная программа</div>
+                <div class="referral-link">
+                    <div class="referral-link-text" id="refLink">https://antarcticwallet.ru/?ref=gelanov123</div>
+                    <button class="copy-btn" onclick="copyRefLink()">Копировать</button>
+                </div>
+                <button class="promo-button" style="width: 100%;">Пригласить друга</button>
+            </div>
+            
+            <div class="subscription-card">
+                <div class="subscription-title">Ваша годовая подписка</div>
+                <div class="subscription-status">Активна до 1 сентября 2025</div>
+            </div>
+        </div>
+        
+        <!-- Страница настроек -->
+        <div id="settingsPage" class="settings-section">
+            <div class="settings-item" onclick="openModal('historyModal')">
+                <div class="settings-title">История переводов</div>
+                <div class="settings-desc">Просмотр и управление историей операций</div>
+            </div>
+            
+            <div class="settings-item" onclick="openModal('balanceModal')">
+                <div class="settings-title">Управление балансом</div>
+                <div class="settings-desc">Настройка отображения баланса</div>
+            </div>
+        </div>
+        
+        <div class="navigation">
+            <div class="nav-item" onclick="showPage('mainPage')">
+                <div class="nav-icon"><i class="fas fa-home"></i></div>
+                <span>Главная</span>
+            </div>
+            <div class="nav-item active" onclick="showPage('mainPage')">
+                <div class="nav-icon"><i class="fas fa-wallet"></i></div>
+                <span>Кошелек</span>
+            </div>
+            <div class="nav-item" onclick="showPage('profilePage')">
+                <div class="nav-icon"><i class="fas fa-user"></i></div>
+                <span>Профиль</span>
+            </div>
+            <div class="nav-item" onclick="showPage('settingsPage')">
+                <div class="nav-icon"><i class="fas fa-cog"></i></div>
+                <span>Настройки</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно отправки -->
+    <div id="sendModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Отправка TON</h2>
+                <button class="close-modal" onclick="closeModal('sendModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="text" class="modal-input" placeholder="Адрес получателя">
+                <input type="number" class="modal-input" placeholder="Сумма TON">
+            </div>
+            <button class="modal-btn" onclick="sendTransaction()">Отправить</button>
+        </div>
+    </div>
+
+    <!-- Модальное окно депозита -->
+    <div id="depositModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Пополнение депозита</h2>
+                <button class="close-modal" onclick="closeModal('depositModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="number" class="modal-input" placeholder="Сумма TON">
+            </div>
+            <button class="modal-btn" onclick="createDeposit()">Создать депозит</button>
+        </div>
+    </div>
+
+    <!-- Модальное окно покупки -->
+    <div id="buyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Покупка TON</h2>
+                <button class="close-modal" onclick="closeModal('buyModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="number" class="modal-input" placeholder="Сумма TON">
+                <p style="color: #94a3b8; font-size: 14px; margin-bottom: 15px;">Курс: 1 TON = $6.11</p>
+            </div>
+            <button class="modal-btn" onclick="buyTon()">Купить</button>
+        </div>
+    </div>
+
+    <!-- Модальное окно договора -->
+    <div id="contractModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Умный договор</h2>
+                <button class="close-modal" onclick="closeModal('contractModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="text" class="modal-input" placeholder="Адрес контракта">
+                <input type="number" class="modal-input" placeholder="Сумма TON">
+                <p style="color: #94a3b8; font-size: 14px; margin-bottom: 15px;">Заключите смарт-контракт с указанными условиями</p>
+            </div>
+            <button class="modal-btn" onclick="createContract()">Создать договор</button>
+        </div>
+    </div>
+
+    <!-- Модальное окно управления балансом -->
+    <div id="balanceModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Управление балансом</h2>
+                <button class="close-modal" onclick="closeModal('balanceModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="number" class="modal-input" id="balanceInput" placeholder="Введите сумму баланса">
+            </div>
+            <button class="modal-btn" onclick="updateBalance()">Обновить баланс</button>
+        </div>
+    </div>
+
+    <!-- Модальное окно истории переводов -->
+    <div id="historyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">История переводов</h2>
+                <button class="close-modal" onclick="closeModal('historyModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="transaction">
+                    <div class="transaction-icon">
+                        <i class="fas fa-user-secret"></i>
+                    </div>
+                    <div class="transaction-details">
+                        <div class="transaction-title">Перевод от Неизвестный</div>
+                        <div class="transaction-date">1 сентября, 23:22</div>
+                    </div>
+                    <div class="transaction-amount positive">+4.10 TON</div>
+                </div>
+                
+                <div class="transaction">
+                    <div class="transaction-icon">
+                        <i class="fas fa-user-secret"></i>
+                    </div>
+                    <div class="transaction-details">
+                        <div class="transaction-title">Перевод от Неизвестный</div>
+                        <div class="transaction-date">1 сентября, 23:11</div>
+                    </div>
+                    <div class="transaction-amount positive">+4.94 TON</div>
+                </div>
+                
+                <div class="transaction">
+                    <div class="transaction-icon">
+                        <i class="fas fa-user-secret"></i>
+                    </div>
+                    <div class="transaction-details">
+                        <div class="transaction-title">Перевод от Неизвестный</div>
+                        <div class="transaction-date">1 сентября, 22:49</div>
+                    </div>
+                    <div class="transaction-amount positive">+3.03 TON</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast уведомление -->
+    <div id="toast" class="toast">Успешно!</div>
+
+    <script>
+        // Показ страницы
+        function showPage(pageId) {
+            document.getElementById('mainPage').style.display = 'none';
+            document.getElementById('profilePage').style.display = 'none';
+            document.getElementById('settingsPage').style.display = 'none';
+            
+            document.getElementById(pageId).style.display = 'block';
+            
+            // Обновляем активную кнопку навигации
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => item.classList.remove('active'));
+            
+            // Устанавливаем активный элемент навигации
+            if (pageId === 'mainPage') {
+                navItems[0].classList.add('active');
+                navItems[1].classList.add('active');
+            } else if (pageId === 'profilePage') {
+                navItems[2].classList.add('active');
+            } else if (pageId === 'settingsPage') {
+                navItems[3].classList.add('active');
+            }
+        }
+        
+        // Открытие модального окна
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+        
+        // Закрытие модального окна
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        
+        // Обновление баланса
+        function updateBalance() {
+            const balanceInput = document.getElementById('balanceInput');
+            const balanceDisplay = document.getElementById('balanceDisplay');
+            
+            if (balanceInput.value) {
+                balanceDisplay.textContent = balanceInput.value + ' $';
+                showToast('Баланс обновлен!');
+                closeModal('balanceModal');
+            }
+        }
+        
+        // Показать детали транзакции
+        function showTransactionDetails(amount, title, date) {
+            alert(`Детали перевода:\n\n${title}\n${date}\n${amount}`);
+        }
+        
+        // Копирование реферальной ссылки
+        function copyRefLink() {
+            const refLink = document.getElementById('refLink');
+            navigator.clipboard.writeText(refLink.textContent)
+                .then(() => showToast('Ссылка скопирована!'));
+        }
+        
+        // Показать toast уведомление
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Функции для операций
+        function sendTransaction() {
+            showToast('Перевод отправлен!');
+            closeModal('sendModal');
+        }
+        
+        function createDeposit() {
+            showToast('Депозит создан!');
+            closeModal('depositModal');
+        }
+        
+        function buyTon() {
+            showToast('TON куплены!');
+            closeModal('buyModal');
+        }
+        
+        function createContract() {
+            showToast('Контракт создан!');
+            closeModal('contractModal');
+        }
+        
+        // Обработка загрузки аватара
+        document.getElementById('avatarInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const avatarImg = document.querySelectorAll('.avatar-img');
+                    avatarImg.forEach(img => {
+                        img.innerHTML = `<img src="${event.target.result}" style="width:100%;height:100%;object-fit:cover;">`;
+                    });
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+</body>
+</html>
